@@ -1,0 +1,146 @@
+﻿@model ML.Usuario
+@{
+    ViewData["Title"] = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center">Formulario Usuarios</h1>
+
+<hr />
+
+@using(Html.BeginForm("Form","Usuario", FormMethod.Post, new { enctype = "mutipart/form-data" }))
+{
+    @Html.HiddenFor(model=>model.IdUsuario)
+
+    <div class="row">
+        <div class="col-md-6">
+            @Html.TextBoxFor(model=>model.Nombre, new { @class = "form-control", @id="txtNombre" , @placeholder = "Nombre *" , onkeypress = "return validarLetras(event,'lblNombre','txtNombre')", onblur = "habilitar()" })
+            <label id="lblNombre" style="color:#ff0000"></label>
+        </div>
+
+        <div class="col-md-6">
+            @Html.TextBoxFor(model=>model.Telefono, new { @class = "form-control", @id="txtTelefono" , @placeholder = "Telefono *" , onkeyup = "validarTelefono('txtTelefono', 'lblTelefono')", onkeypress = "return soloNumero(event,'lblTelefono')", onblur = "habilitar()" })
+            <label id="lblTelefono" style="color:#ff0000"></label>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        
+        <div class="col-md-6">
+            @Html.TextBoxFor(model=>model.Email, new { @class = "form-control", @id="txtEmail" , @placeholder = "Email *" , onkeyup = "validarEmail('txtEmail','lblEmail')" , onblur = "habilitar()"})
+            <label id="lblEmail" style="color:#ff0000"></label>
+        </div>
+
+        <div class="col-md-6">
+            @Html.TextBoxFor(model=>model.Empresa, new { @class = "form-control", @id="txtEmpresa" , @placeholder = "Empresa *" , onblur = "habilitar()" })
+            <label id="lblEmpresa" style="color:#ff0000"></label>
+        </div>
+
+    </div>
+    <hr />
+    <div class="row">
+        
+        <div class="col-md-6">
+            <input type="submit" data-toggle="modal" class="btn btn-success form-control" value="Guardar" id="buttonGuardar" disabled/>
+        </div>
+
+        <div class="col-md-6">
+            <a class="btn btn-danger form-control" href="@Url.Action("GetAll","Usuario")">Regresar</a>
+        </div>
+
+    </div>
+}
+
+@section scripts{
+    <script type="text/javascript">
+
+        function habilitar(){
+            let inputNombre = document.getElementById("txtNombre").value;
+            let inputTelefono = document.getElementById("txtTelefono").value;
+            let inputEmail = document.getElementById("txtEmail").value;
+            let inputEmpresa = document.getElementById("txtEmpresa").value;
+
+            let button = document.getElementById("buttonGuardar");
+
+
+            if(inputNombre == "" || inputTelefono == "" || inputEmail == "" || inputEmpresa == ""){
+                document.getElementById("buttonGuardar").disabled = true;
+            }
+            else{
+                document.getElementById("buttonGuardar").disabled = false;
+            }
+         }
+            document.getElementById("buttonGuardar").addEventListener("click", () => {
+                alert("Haz completado todo!")
+            });
+        
+
+        
+        function validarLetras(e, lbl,txt) {
+            var key = e.keyCode;
+            if ((key >= 65 && key <= 90) || key == 8 || (key >= 97 && key <= 122)) {
+                $('#' + lbl).text('');
+                return true;
+                $("#" + txt).css("border", "2px solid green");
+                console.log("Cumple");
+            }
+            else {
+                $('#' + lbl).text('Solo se aceptan letras');
+                $('#' + lbl).css('color', 'red');
+
+                return false;
+            }
+        }
+
+        function soloNumero(evt, lbl) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                $('#' + lbl).text('Solo se aceptan numeros');
+                $('#' + lbl).css('color', 'red');
+                return false;
+            }
+            else {
+                $('#' + lbl).text('');
+                return true;
+            }
+        }
+
+        function validarEmail(txt, lbl) {
+            var regex = /^([a-zA-Z0-9_\.\+\-])+\@@(([a-zA-z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/;
+            var datos = $('#' + txt).val();
+
+            if (regex.test(datos)) {
+                $("#" + lbl).text("");
+                $("#" + txt).css("border", "2px solid green");
+                console.log("Cumple");
+            }
+            else {
+                $("#" + lbl).text("verifique su correo");
+                $("#" + lbl).css("color", "red");
+                $("#" + txt).css("border", "2px solid red");
+                console.log("No cumple");
+            }
+        }
+
+        function validarTelefono(txt, lbl) {
+
+            var regex = /^[0-9]{10,12}$/;
+
+            var datos = $('#' + txt).val();
+
+            if (regex.test(datos)) {
+                $("#" + lbl).text("");
+                $("#" + txt).css("border", "2px solid green");
+                console.log("cumple");
+            }
+            else {
+                $("#" + lbl).text("Solo acepta numeros y de 10 a 12 valores");
+                $("#" + lbl).css("color", "red");
+                $("#" + txt).css("border", "2px solid red");
+                console.log("No cumple");
+            }
+        }
+
+    </script>
+}
